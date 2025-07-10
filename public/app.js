@@ -13,6 +13,20 @@ let currentReceiving = null;
 let messageInput;
 let sendMessageButton;
 let chatHistory = [];
+// 自动下载标志位
+let autoDownload = true;
+// 是否在下载后删除链接标志位
+let deleteUrlAfterDownload = true;
+
+// 从本地存储加载设置
+if(localStorage.getItem("autoDownload") === 'false'){
+    autoDownload = false;
+    document.getElementById("autoDownload").checked = false;
+}
+if(localStorage.getItem("deleteUrlAfterDownload") === 'false'){
+    deleteUrlAfterDownload = false;
+    document.getElementById("deleteUrlAfterDownload").checked = false;
+}
 
 // 添加生成设备后缀的函数
 function generateDeviceSuffix() {
@@ -522,8 +536,21 @@ function handleFileTransfer(message) {
             const a = document.createElement('a');
             a.href = url;
             a.download = currentReceiving.fileName;
-            a.click();
-            URL.revokeObjectURL(url);
+            // 自动下载
+            if(autoDownload){
+                a.click();
+            }
+            // 删除下载链接
+            if(deleteUrlAfterDownload){
+                URL.revokeObjectURL(url);
+            }else{
+                a.text = currentReceiving.fileName;
+                var eles = document.querySelectorAll('.file-name')
+                var ele = eles[eles.length - 1]
+                ele.textContent = ''; 
+                ele.innerHTML = a.outerHTML;
+            }
+            
             
             currentReceiving = null;
         }
@@ -847,3 +874,17 @@ function displayMessage(message, sender, isSelf) {
     // 滚动到底部
     chatMessages.scrollTop = chatMessages.scrollHeight;
 } 
+
+// 监听自动下载和删除URL选项的变化
+const autoDownloadCheckbox = document.querySelector("#autoDownload");
+autoDownloadCheckbox.addEventListener("change", () => {
+    autoDownload = autoDownloadCheckbox.checked;
+    // 设置本地存储
+    localStorage.setItem("autoDownload", autoDownload);
+});
+const deleteUrlAfterDownloadCheckbox = document.querySelector("#deleteUrlAfterDownload");
+deleteUrlAfterDownloadCheckbox.addEventListener("change", () => {
+    deleteUrlAfterDownload = deleteUrlAfterDownloadCheckbox.checked;
+    // 设置本地存储
+    localStorage.setItem("deleteUrlAfterDownload", deleteUrlAfterDownload);
+});

@@ -18,7 +18,11 @@
         <main>
             <div class="panel devices-panel">
                 <h2>在线设备</h2>
-                <div class="device-list" id="devices"></div>
+                <div class="device-options">
+                    <label><input type="checkbox" id="autoDownload" checked> 自动下载文件</label>
+                    <label style="margin-left: 1em;"><input type="checkbox" id="deleteUrlAfterDownload" checked> 删除下载链接</label>
+                </div>
+                <div class="device-list" id="devices"></div>                
             </div>
 
             <div class="panel chat-panel">
